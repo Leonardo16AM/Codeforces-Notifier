@@ -1,1 +1,1 @@
-#Codeforces VSCode Notifier
+# Codeforces VSCode Submition Notifier

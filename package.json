@@ -3,6 +3,8 @@
 	"description": "Codeforces submition notifications in vscode",
 	"version": "0.0.1",
 	"publisher": "Leonardo16",
+	"icon": "https://github.com/Leonardo16AM/Codeforces-Notifier/blob/master/icon.png?raw=true",
+	"displayName": "Codeforces Submition Notify",
 	"repository": "https://github.com/Leonardo16AM/Codeforces-Notifier",
 	"engines": {
 		"vscode": "^1.74.0"

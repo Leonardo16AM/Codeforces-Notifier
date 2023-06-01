@@ -38,7 +38,6 @@ async function activate(context) {
     let running=false;
 
     cfh=await getHandle();
-    vscode.window.showInformationMessage(cfh);
                     
     async function checkSubmissions() {
         try {

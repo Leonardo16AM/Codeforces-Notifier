@@ -51,7 +51,7 @@ async function activate(context) {
             if (lastSubmissionId === null) {
                 lastSubmissionId = latestSubmission.id;
             }else{    
-                if (latestSubmission.verdict !== 'TESTING') {
+                if (latestSubmission.verdict !== 'TESTING' && latestSubmission.verdict !== 'undefined') {
                     if(lastSubmissionId !== latestSubmission.id){ 
                        lastSubmissionId = latestSubmission.id;
                         let verdict = latestSubmission.verdict;

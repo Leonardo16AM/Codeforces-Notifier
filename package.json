@@ -1,7 +1,7 @@
 {
 	"name": "codeforces-notify",
-	"description": "Codeforces submition notifications in vscode",
-	"version": "0.0.4",
+	"description": "Submition notifications in vscode",
+	"version": "0.0.5",
 	"publisher": "Leonardo16",
 	"icon": "icon.png",
 	"displayName": "Codeforces Submition Notify",

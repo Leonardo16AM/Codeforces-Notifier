@@ -3,7 +3,7 @@
 ![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/leonardo16.codeforces-notify?color=red)
 
 
-This is a Visual Studio Code extension that tracks the latest submissions of a specified Codeforces user. 
+This is a Visual Studio Code extension that tracks the latest submissions of a specified Codeforces user and the problems tried in the last participated contest. 
 
 ## Features
 

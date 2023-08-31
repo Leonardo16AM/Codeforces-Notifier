@@ -1,17 +1,17 @@
 const vscode = require('vscode');
 const axios = require('axios');
 
+let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Center, 100);
+
 async function getCodeforcesSubmissions(handle) {
     const response = await axios.get(`https://codeforces.com/api/user.status?handle=${handle}&count=5`);
     return response.data.result;
 }
 
-async function changeStatusBarColor(themeName) {
-    const themeConfig = vscode.workspace.getConfiguration('workbench');
-    await themeConfig.update('colorTheme', themeName, vscode.ConfigurationTarget.Global);
+async function getContestProblems(contestId, handle) {
+    const response = await axios.get(`https://codeforces.com/api/contest.status?contestId=${contestId}&handle=${handle}&count=500`);
+    return response.data.result;
 }
-
-
 
 async function getHandle() {
     const config = vscode.workspace.getConfiguration('codeforces-notify');
@@ -35,43 +35,79 @@ async function getHandle() {
 
 async function activate(context) {
     let lastSubmissionId = null;
-    let running=false;
+    let handle = await getHandle();
 
-    cfh=await getHandle();
-                    
     async function checkSubmissions() {
         try {
-            
-            let submissions = await getCodeforcesSubmissions(cfh);
-            if (submissions.length === 0) {
-                return;
-            }
+            const submissions = await getCodeforcesSubmissions(handle);
+            if (submissions.length === 0) return;
 
-            let latestSubmission = submissions[0];
+            const latestSubmission = submissions[0];
+
             if (lastSubmissionId === null) {
                 lastSubmissionId = latestSubmission.id;
-            }else{    
-                if (latestSubmission.verdict !== 'TESTING' && latestSubmission.verdict !== 'undefined') {
-                    if(lastSubmissionId !== latestSubmission.id){ 
-                       lastSubmissionId = latestSubmission.id;
-                        let verdict = latestSubmission.verdict;
-                        vscode.window.showInformationMessage(`${latestSubmission.problem.index}-${latestSubmission.problem.name}: ${verdict}`);
-                    }
+            } else if (latestSubmission.id !== lastSubmissionId) {
+                lastSubmissionId = latestSubmission.id;
+
+                if (latestSubmission.verdict !== 'TESTING') {
+                    const verdict = latestSubmission.verdict;
+                    vscode.window.showInformationMessage(`${latestSubmission.problem.index}-${latestSubmission.problem.name}: ${verdict}`);
                 }
-                
             }
 
-
         } catch (error) {
-            console.error('Failed to fetch Codeforces submissions:', error);
+            console.error('Failed to check submissions:', error);
         }
     }
 
-    const interval = setInterval(checkSubmissions, 500); 
+    async function updateStatusBar() {
+        try {
+            const submissions = await getCodeforcesSubmissions(handle);
+            if (submissions.length === 0) return;
+
+            const latestSubmission = submissions[0];
+            const currentTime = Math.floor(new Date().getTime() / 1000);
+
+            if (currentTime - latestSubmission.creationTimeSeconds <= 14400) {
+                const contestId = latestSubmission.problem.contestId;
+                const contestProblems = await getContestProblems(contestId, handle);
+                
+                let problemStatus = {};
+
+                for (let sub of contestProblems) {
+                    const index = sub.problem.index;
+                    problemStatus[index] = problemStatus[index] || '⚪';  // Default to white
+
+                    if (sub.verdict === "OK") {
+                        problemStatus[index] = '✔️';  // Solved
+                    } else {
+                        if(problemStatus[index] != '✔️')
+                            problemStatus[index] = '❌';  // Incorrect
+                    }
+                }
+
+                const sortedKeys = Object.keys(problemStatus).sort();
+                const statusBarText = `Contest ${contestId}: ` + sortedKeys.map(k => `${k}: ${problemStatus[k]}`).join(' | ');
+
+                statusBarItem.text = statusBarText;
+                statusBarItem.show();
+            } else {
+                statusBarItem.hide();
+            }
+
+        } catch (error) {
+            console.error('Failed to update status bar:', error);
+        }
+    }
+
+    const interval = setInterval(async () => {
+        await checkSubmissions();
+        await updateStatusBar();
+    }, 2000); // 2 seconds, to avoid rate limit
 
     context.subscriptions.push(vscode.Disposable.from({ dispose: () => clearInterval(interval) }));
+    context.subscriptions.push(statusBarItem);
 }
-
 
 exports.activate = activate;
 

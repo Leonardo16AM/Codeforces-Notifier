@@ -99,11 +99,18 @@ async function activate(context) {
             console.error('Failed to update status bar:', error);
         }
     }
-
+    
+    let checkInProgress = false;
     const interval = setInterval(async () => {
-        await checkSubmissions();
-        await updateStatusBar();
-    }, 2000); // 2 seconds, to avoid rate limit
+        if (!checkInProgress) {
+            checkInProgress = true;
+            await checkSubmissions();
+            setTimeout(async () => {
+                await updateStatusBar();
+                checkInProgress = false;
+            }, 2000);
+        }
+    }, 4000);
 
     context.subscriptions.push(vscode.Disposable.from({ dispose: () => clearInterval(interval) }));
     context.subscriptions.push(statusBarItem);

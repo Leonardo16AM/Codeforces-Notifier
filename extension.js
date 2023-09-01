@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const axios = require('axios');
 
-let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Center, 100);
+let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Center, 0);
 
 async function getCodeforcesSubmissions(handle) {
     const response = await axios.get(`https://codeforces.com/api/user.status?handle=${handle}&count=5`);

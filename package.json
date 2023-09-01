@@ -1,39 +1,32 @@
 {
 	"name": "codeforces-notify",
 	"description": "Submition notifications in vscode",
-	"version": "0.0.8",
+	"version": "0.0.8",	
 	"publisher": "Leonardo16",
 	"icon": "icon.png",
 	"displayName": "Codeforces Submition Notify",
 	"repository": "https://github.com/Leonardo16AM/Codeforces-Notifier",
 	"engines": {
-	  "vscode": "^1.74.0"
+		"vscode": "^1.74.0"
 	},
 	"activationEvents": [
-	  "onStartupFinished"
+		"onStartupFinished"
 	],
 	"main": "./extension.js",
 	"contributes": {
-	  "configuration": {
-		"title": "Codeforces Notify",
-		"properties": {
-		  "codeforces-notify.handle": {
-			"type": "string",
-			"default": "",
-			"description": "Codeforces user handle"
-		  }
+		"configuration": {
+			"title": "Codeforces Notify",
+			"properties": {
+				"codeforces-notify.handle": {
+					"type": "string",
+					"default": "",
+					"description": "Codeforces user handle"
+				}
+			}
 		}
-	  }
 	},
-	"scripts": {
-	  "compile": "tsc -watch -p ./",
-	  "postinstall": "node ./node_modules/vscode/bin/install"
-	},
+	"scripts": {},
 	"devDependencies": {
-	  "@types/vscode": "^1.73.0"
-	},
-	"dependencies": {
-	  "axios": "^0.21.1"
+		"@types/vscode": "^1.73.0"
 	}
-  }
-  
+}
